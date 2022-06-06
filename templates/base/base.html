@@ -1,0 +1,183 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>
+        {% block head_title %}
+        Caja Chica - Quinar
+        {% endblock head_title %}
+    </title>
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'base/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="{% static 'base/css/metisMenu.min.css' %}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{% static 'base/css/sb-admin-2.css' %}" rel="stylesheet">
+
+     <!-- Custom CSS -->
+     <link href="{% static 'base/css/datetimepicker.css' %}" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="{% static 'base/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    
+    <!--Graficos-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js" integrity="sha512-TW5s0IT/IppJtu76UbysrBH9Hy/5X41OTAbQuffZFU6lQ1rdcLHzpU5BzVvr/YFykoiMYZVWlr/PX1mDcfM9Qg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <!--HTMX-->
+    <script src="https://unpkg.com/htmx.org@1.7.0"></script>
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'generales:home' %}">Caja Chica Quinar</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="{% url 'generales:logout' %}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <li>
+                            <a href="#"><i class="fa fa-cogs fa-fw"></i> Componentes <span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{% url 'admin:index' %}">Admin</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'centrocosto:grupo_list' %}">Grupos</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'centrocosto:zona_list' %}">Zonas</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'centrocosto:proyecto_list' %}">Proyectos</a>
+                                </li>  
+
+                                <li>
+                                    <a href="{% url 'centrocosto:concepto_list' %}">Conceptos</a>
+                                </li>  
+                                <li>
+                                    <a href="{% url 'centrocosto:tipocomprobante_list' %}">Comprobantes</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'centrocosto:centrodecosto_list' %}">Centro de Costos</a>
+                                </li>
+
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-usd fa-fw"></i> Cajas <span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">                                
+                                <li>
+                                    <a href="{% url 'caja:caja_list' %}">Abrir Cajas</a>
+                                </li>   
+                                <li>
+                                    <!--<a href="{% url 'caja:caja_rendir' %}">Rendir Cajas</a> -->
+                                </li>
+                                <li>
+                                    <a href="{% url 'caja:caja_cargar_rendicion' %}">Cargar Rendicion</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'generales:sin_privilegios' %}">Ver Rendiciones</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <!-- Page Content -->
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                <div class="row">           
+                    <div class="col-lg-12">
+                        {% block contenido %}Blank{% endblock contenido %}
+                    </div>                    
+                </div>                
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    
+    <!-- jQuery -->
+    <script src="{% static 'base/js/jquery.min.js' %}"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static 'base/js/bootstrap.min.js' %}"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="{% static 'base/js/metisMenu.min.js' %}"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="{% static 'base/js/sb-admin-2.js' %}"></script>
+
+    <!--Graficos-->
+    <script src="{% static 'base/js/chart.js' %}"></script>
+
+    <!--Modal-->
+    <script src="{% static 'base/js/master.js' %}"></script>
+
+    <!--Swetalert-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+    <!--
+    This event is triggered after htmx has collected parameters 
+    for inclusion in the request. It can be used to include or update the parameters that htmx will send:
+    Esto es para validar el token CSRF que pide django cuando haces un post con una modificacion similar al
+    que se usa para los formularios.
+    -->
+    <script>
+        document.body.addEventListener('htmx:configRequest', (event) => {
+            event.detail.headers['X-CSRFToken'] ='{{ csrf_token}}'; 
+        });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/3.1.3/js/bootstrap-datetimepicker.min.js"></script>
+    {% block extrajs %}Blank{% endblock extrajs %}
+</body>
+
+</html>

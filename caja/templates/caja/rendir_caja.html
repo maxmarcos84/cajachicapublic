@@ -1,0 +1,92 @@
+{%extends 'base/base.html' %}
+{% load static %}
+{% block contenido %}
+
+<form method="POST">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Nueva Rendicion
+        </div>
+        <div class="row" style="margin-left: 10px; margin-top: 10px;">
+            <div class="col-sm-12 form-group">
+                <div class="input-group col-sm-12" id="DateDemo">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    {{ form.source.errors }}
+                    {{ form.source }}
+                    <label style="margin-right: 5px;">Desde: </label>
+                    {{form.fechaInicioSemana}}
+                    <label style="margin-right: 5px; margin-left: 5px;">Hasta: </label>
+                    {{form.fechaFinalSemana}}
+                    <button type="submit" class="btn btn-success" style="margin-left: 10px;">
+                        <span class="fa fa-check"></span> Iniciar</button>
+                    <!--<button type="submit" class="btn btn-danger" style="margin-left: 10px;">
+                        <span class="fa fa-times"></span> Cancelar</button> -->
+                </div>
+                <div id="Advertencia">
+                    <h1>Usted tiene una Rendicion abierta, debera finalizarla para poder iniciar una nueva.</h1>
+                </div>
+            </div>
+            <div>
+                {% if messages %}
+                <ul class="messages alert-danger">
+                    {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}" {% endif %}><strong> {{ message }} </strong>
+                        </li>
+                        {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</form>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        Ultimas Rendiciones
+    </div>
+    <div class="panel-body">
+        <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+            <thead>
+                <tr>                    
+                    <th>Id</th>
+                    <th>Fecha Semana</th>
+                    <th>Aprobada</th>
+                    <th>Fecha Creacion</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in listado %}
+                <tr>
+                    <td>{{ item.Caja.get_usuario() }}</td>
+                    <td>{{ item.fechaInicioSemana|date:'d/m/Y H:i' }}</td>
+                    <td>{{ item.aprobada|yesno:"Aprobada,Pendiente"}}</td>
+                    <td>{{ item.fecha|date:'d/m/Y H:i' }}</td>
+                    <td>{{ item.cerrada|yesno:"Cerrada,Abierta"}}</td>
+                    <td>
+                        {% if item.cerrada is False %}
+                        <button href="#" class="button btn-success">Continuar</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock contenido %}
+{% block extrajs %}
+<script>
+    $(function () {
+        var cajaAbierta = "{{ cajaAbierta }}";
+        if (cajaAbierta == "True") {
+            document.getElementById('DateDemo').style.display = 'none';
+        }
+        else {
+            document.getElementById('Advertencia').style.display = 'none';
+        }
+    })
+</script>
+{% endblock extrajs %}

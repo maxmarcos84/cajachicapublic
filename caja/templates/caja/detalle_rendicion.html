@@ -1,0 +1,192 @@
+{%extends 'base/base.html' %}
+{% load static %}
+{% block contenido %}
+
+
+<panel id="panel_datos">
+    <!--Prueba robo-->
+    <div class="row" style="margin-top: 10px;">
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-user fa-2x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div style="font-size: 25px;">Usuario</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#">
+                    <div class="panel-footer">
+                        <span class="pull-left" style="font-size:20px ;">
+                            {{ empleado.user.first_name }} {{ empleado.user.last_name }}
+                        </span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-green">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-calendar fa-2x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div style="font-size: 25px;">Desde</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#">
+                    <div class="panel-footer">
+                        <span class="pull-left" style="font-size: 20px;">
+                            {{ fechaDesde |date:"SHORT_DATE_FORMAT" }}
+                        </span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-yellow">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-calendar fa-2x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div style="font-size: 25px;">Hasta</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#">
+                    <div class="panel-footer">
+                        <span class="pull-left" style="font-size: 20px;">
+                            {{ fechaHasta |date:"SHORT_DATE_FORMAT" }}
+                        </span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-red">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-usd fa-2x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div style="font-size: 25px;">Saldo</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#">
+                    <div class="panel-footer">
+                        <span class="pull-left" style="font-size: 20px;">{{ saldo }}</span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>    
+</panel>
+
+<div class="panel panel-primary" id="panel_registros" style="margin-top: 10px">
+    <div class="panel-heading">
+        Detalle rendicion
+    </div>
+    <div class="panel-body">
+        <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+            <thead>
+                <tr>
+                    <th>Descripcion</th>
+                    <th>Grupo</th>
+                    <th>Zona</th>
+                    <th>Proyecto</th>
+                    <th>Concepto</th>
+                    <th>Fecha</th>
+                    <th>Tipo Comprobante</th>
+                    <th>Ingreso</th>
+                    <th>Egreso</th>
+                    <th>Estado</th>    
+                    <th>Anular</th>                                    
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in listado %}
+                {% if item.anulado is False %}
+                <tr>
+                    <td style="display: none;">{{item.id}}</td>
+                    <td>{{ item.descripcion}}</td>
+                    <td>{{ item.grupo.codigo}}</td>
+                    <td>{{ item.zona.codigo}}</td>
+                    <td>{{ item.proyecto.codigo}}</td>
+                    <td>{{ item.concepto.codigo}}</td>
+                    <td>{{ item.fecha|date:'d/m/Y ' }}</td>
+                    <td>{{ item.tipocomprobante}}</td>
+                    <td class="text-right">{{ item.ingreso}}</td>
+                    <td class="text-right">{{ item.egreso}}</td>
+                    <td>{{ item.anulado|yesno:"Anulado,Ingresado"}}</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="abrir_modal_eliminacion('{% url 'caja:anular_registro_modal' item.id %}');">Anular</button>
+                    </td>   
+                </tr>
+                {% endif %}    
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="panel panel-danger" id="panel_registros_anulados" style="margin-top: 10px">
+    <div class="panel-heading">
+        Items Anulados
+    </div>
+    <div class="panel-body">
+        <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+            <thead>
+                <tr>
+                    <th>Descripcion</th>
+                    <th>Grupo</th>
+                    <th>Zona</th>
+                    <th>Proyecto</th>
+                    <th>Concepto</th>
+                    <th>Fecha</th>
+                    <th>Tipo Comprobante</th>
+                    <th>Ingreso</th>
+                    <th>Egreso</th>
+                    <th>Estado</th>
+                                                       
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in listado %}
+                {% if item.anulado is True %}
+                <tr>
+                    <td style="display: none;">{{item.id}}</td>
+                    <td>{{ item.descripcion}}</td>
+                    <td>{{ item.grupo.codigo}}</td>
+                    <td>{{ item.zona.codigo}}</td>
+                    <td>{{ item.proyecto.codigo}}</td>
+                    <td>{{ item.concepto.codigo}}</td>
+                    <td>{{ item.fecha|date:'d/m/Y ' }}</td>
+                    <td>{{ item.tipocomprobante}}</td>
+                    <td class="text-right">{{ item.ingreso}}</td>
+                    <td class="text-right">{{ item.egreso}}</td>
+                    <td>{{ item.anulado|yesno:"Anulado,Ingresado"}}</td>
+                                    
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="modal fade" id="eliminacion" role="dialog">
+
+</div>
+
+{% endblock contenido %}

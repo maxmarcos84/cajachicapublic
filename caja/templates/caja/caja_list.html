@@ -1,0 +1,35 @@
+{% extends 'base/base.html' %}
+
+{% block contenido %}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <a href="{% url 'caja:caja_add' %}" class="btn btn-info">
+            <span class="fa fa-plus-circle"></span> Nueva</a>
+        
+    </div>
+    <div class="panel-body">
+        <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Estado</th>
+                    <th>Saldo</th>
+                    <th>Fecha Creacion</th>
+                    <th>Usuario Creador</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in obj %}
+                <tr>                    
+                    <td>{{ item.usuarioCaja }}</td>
+                    <td>{{ item.activa|yesno:"Activo,Inactivo"}}</td>
+                    <td>{{ item.saldo }}</td>
+                    <td>{{ item.fechaCreacion|date:'d/m/Y H:i' }}</td>
+                    <td>{{ item.usuarioCreador }}</td>           
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock contenido %}

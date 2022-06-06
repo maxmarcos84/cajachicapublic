@@ -1,0 +1,30 @@
+{%extends 'base/base.html' %}
+{% block contenido %}
+<form method="POST">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            Editar/Crear Caja
+        </div>
+        <div class="panel-body">
+            {% if messages %}
+                <ul class="messages alert-danger">
+                    {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}><strong> {{ message }} </strong> </li>
+                    {% endfor %}
+                </ul>    
+            {% endif %}
+           {% csrf_token %} <!--Token de seguridad de django obligatorio para los forms-->
+           {{form.as_p}} <!--indica que aca va un formulario ???-->
+
+            <button type="submit" class="btn btn-success">
+                <span class="fa fa-save"></span>Guardar</button>
+            <a href="{% url 'caja:caja_list' %}" class="btn btn-danger">
+                <span class="fa fa-undo"></span>Cancelar
+            </a>
+        </div>
+    </div>
+    <div></div>
+    <div></div>
+
+</form>
+{% endblock contenido%}

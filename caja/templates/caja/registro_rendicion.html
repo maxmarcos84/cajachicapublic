@@ -1,0 +1,89 @@
+{%extends 'base/base.html' %}
+{% load static %}
+{% block contenido %}
+
+<form method="POST">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            Rendir caja
+        </div>
+        <div class="panel-body">
+
+            {% csrf_token %}
+            {{ formRegistro.non_field_errors }}
+            {{ formRegistro.source.errors }}
+            {{ formRegistro.source }}
+
+            <div class="row">
+                <div class="col-xs-4">
+                    <label>{{ formRegistro.descripcion.label_tag }}</label>
+                </div>
+                <div class="col-xs-4">
+                    {{ formRegistro.grupo.label_tag }}
+                </div>
+                <div class="col-xs-4">
+                    {{ formRegistro.zona.label_tag }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4">
+                    {{formRegistro.descripcion}}
+                </div>
+                <div class="col-xs-4">
+                    {{formRegistro.grupo}}
+                </div>
+                <div class="col-xs-4">
+                    {{formRegistro.zona}}
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-xs-4">
+                    <label>{{ formRegistro.proyecto.label_tag }}</label>
+                </div>
+                <div class="col-xs-4">
+                    {{ formRegistro.concepto.label_tag }}
+                </div>
+                <div class="col-xs-4">
+                    {{ formRegistro.tipocomprobante.label_tag }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4">
+                    {{formRegistro.proyecto}}
+                </div>
+                <div class="col-xs-4">
+                    {{formRegistro.concepto}}
+                </div>
+                <div class="col-xs-4">
+                    {{formRegistro.tipocomprobante}}
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-xs-4">
+                    {{ formRegistro.monto.label_tag }}
+                </div>
+
+
+            </div>
+            <div class="row" style="margin-bottom: 20px;">
+                <div class="col-xs-4">
+                    {{formRegistro.monto}}
+                </div>
+                <div class="col-xs-4">
+                    {{formRegistro.incremento}}
+                    <label class="form-check-label" for="chkincremento">Es incremento?</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success">
+                <span class="fa fa-save"></span>Guardar</button>
+            <a href="{% url 'caja:caja_list' %}" class="btn btn-danger">
+                <span class="fa fa-undo"></span>Cancelar
+            </a>
+        </div>
+    </div>
+</form>
+
+{% endblock contenido %}

@@ -1,0 +1,260 @@
+{% extends 'base/base.html' %}
+{% block head_title %}
+Caja chica Quinar
+{% endblock head_title %}
+{% block contenido %}
+
+<!-- <h1>Quinar Caja Chica</h1> -->
+
+<div class="row" style="margin-left: 10px; margin-top: 5px;">
+    <div class="col-sm-6">
+        <div class="panel panel-primary" id="panel_registros2" style="margin-top: 5px;">
+            <div class="panel-heading">
+                <div style="font-size: 15px; font-weight: bold">Gasto por centro de costo</div>
+            </div>
+            <div class="panel-body">
+                <canvas id="myChart" width="400" height="200"></canvas>
+                <script>
+                    var ctx = document.getElementById('myChart').getContext('2d');
+                    var myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: [{% for centro in centros %} '{{ centro.codigo_centro }}', {% endfor %}],
+                        datasets: [{
+                                    label: '# Saldo a la fecha en $',
+                                    data: [{%for saldo in saldos %}{{ saldo }}, {% endfor %}],
+                                    backgroundColor: [
+                                            'rgba(255, 99, 132, 0.8)',
+                                            'rgba(54, 162, 235, 0.8)',
+                                            'rgba(255, 206, 86, 0.8)',
+                                            'rgba(75, 192, 192, 0.8)',
+                                            'rgba(153, 102, 255, 0.8)',
+                                            'rgba(255, 159, 64, 0.8)',
+                                            'rgba(240, 120, 50, 0.8)',
+                                            ],
+                                            borderColor: [
+                                                'rgba(255, 99, 132, 1)',
+                                                'rgba(54, 162, 235, 1)',
+                                                'rgba(255, 206, 86, 1)',
+                                                'rgba(75, 192, 192, 1)',
+                                                'rgba(153, 102, 255, 1)',
+                                                'rgba(255, 159, 64, 1)',
+                                                'rgba(240, 120, 50, 1)',
+                                            ],
+                                    borderWidth: 2
+                                }]
+                            },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="panel panel-primary" id="panel_registros2" style="margin-top: 5px;">
+            <div class="panel-heading">
+                <div style="font-size: 15px; font-weight: bold">Gasto por empleado</div>
+            </div>
+            <div class="panel-body">
+                <canvas id="myChart2" width="400" height="200"></canvas>
+                <script>
+                    var ctx = document.getElementById('myChart2').getContext('2d');
+                    var myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: [{% for caja in cajas %} '{{ caja.usuario }}', {% endfor %}],
+                    datasets: [{
+                        label: '# Saldo a la fecha en $',
+                        data: [{%for caja in cajas %}{{ caja.saldo }}, {% endfor %}],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(153, 102, 255, 0.8)',
+                            'rgba(255, 159, 64, 0.8)',
+                            'rgba(240, 120, 50, 0.8)',
+                        ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)',
+                                'rgba(240, 120, 50, 1)',
+
+                            ],
+                                borderWidth: 2
+                    }]
+                },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+
+                    }
+            });
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" style="margin-left: 10px; margin-top: 2px;">
+    <div class="col-sm-6">
+        <div class="panel panel-primary" id="panel_registros2" >
+            <div class="panel-heading">
+                <div style="font-size: 15px; font-weight: bold">Dias sin rendir</div>
+            </div>
+            <div class="panel-body">
+                <canvas id="myChart3" width="400" height="200"></canvas>
+                <script>
+                    var ctx = document.getElementById('myChart3').getContext('2d');
+                    var myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: [{% for dia in dias_retraso %} '{{ dia.usuario }}', {% endfor %}],
+                        datasets: [{
+                                    label: 'Dias en total',
+                                    data: [{% for dia in dias_retraso %} {{ dia.dias }}, {% endfor %}],
+                                    backgroundColor: [
+                                            'rgba(255, 99, 132, 0.8)',
+                                            'rgba(54, 162, 235, 0.8)',
+                                            'rgba(255, 206, 86, 0.8)',
+                                            'rgba(75, 192, 192, 0.8)',
+                                            'rgba(153, 102, 255, 0.8)',
+                                            'rgba(255, 159, 64, 0.8)',
+                                            'rgba(240, 120, 50, 0.8)',
+                                            ],
+                                            borderColor: [
+                                                'rgba(255, 99, 132, 1)',
+                                                'rgba(54, 162, 235, 1)',
+                                                'rgba(255, 206, 86, 1)',
+                                                'rgba(75, 192, 192, 1)',
+                                                'rgba(153, 102, 255, 1)',
+                                                'rgba(255, 159, 64, 1)',
+                                                'rgba(240, 120, 50, 1)',
+                                            ],
+                                    borderWidth: 2,
+                                }]
+                            },
+                        options: {
+                            indexAxis: 'y',
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            },
+                            
+                        }
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="panel panel-primary" id="panel_registros2" >
+            <div class="panel-heading">
+                <div style="font-size: 15px; font-weight: bold">"Diferencia Incremento/Rendicion"</div>
+            </div>
+            <div class="panel-body">
+                <div>
+                    <canvas id="myChart4"></canvas>
+                </div>                
+                <script>
+                    const data = {
+                        labels: [{% for registro in diferencia_mensual %} '{{ registro.mes }}', {% endfor %}],
+                        datasets: [
+                            {
+                                label: 'Incremento',
+                                data: [{% for registro in diferencia_mensual %} {{ registro.incremento }}, {% endfor %}],
+                                borderColor: [
+                                                'rgba(255, 99, 132, 1)',
+                                                'rgba(54, 162, 235, 1)',
+                                                'rgba(255, 206, 86, 1)',
+                                                'rgba(75, 192, 192, 1)',
+                                                'rgba(153, 102, 255, 1)',
+                                                'rgba(255, 159, 64, 1)',
+                                                'rgba(240, 120, 50, 1)',
+                                            ],
+                                backgroundColor: [
+                                            'rgba(255, 99, 132, 0.8)',
+                                            'rgba(54, 162, 235, 0.8)',
+                                            'rgba(255, 206, 86, 0.8)',
+                                            'rgba(75, 192, 192, 0.8)',
+                                            'rgba(153, 102, 255, 0.8)',
+                                            'rgba(255, 159, 64, 0.8)',
+                                            'rgba(240, 120, 50, 0.8)',
+                                        ],                
+                            },
+                            {
+                                label: 'Rendido',
+                                data: [{% for registro in diferencia_mensual %} {{ registro.rendido }}, {% endfor %}],
+                                borderColor: [
+                                                'rgba(255, 99, 132, 1)',
+                                                'rgba(54, 162, 235, 1)',
+                                                'rgba(255, 206, 86, 1)',
+                                                'rgba(75, 192, 192, 1)',
+                                                'rgba(153, 102, 255, 1)',
+                                                'rgba(255, 159, 64, 1)',
+                                                'rgba(240, 120, 50, 1)',
+                                            ],
+                                backgroundColor: [
+                                            'rgba(255, 99, 132, 0.8)',
+                                            'rgba(54, 162, 235, 0.8)',
+                                            'rgba(255, 206, 86, 0.8)',
+                                            'rgba(75, 192, 192, 0.8)',
+                                            'rgba(153, 102, 255, 0.8)',
+                                            'rgba(255, 159, 64, 0.8)',
+                                            'rgba(240, 120, 50, 0.8)',
+                                        ],
+                                fill: '-1'
+                            },
+                        ],
+                    };
+                    const config = {
+                        type: 'line',
+                        data: data,
+                        options: {
+                            scales: {
+                                y: {
+                                    stacked: false
+                                }
+                            },
+                            plugins: {
+                                filler: {
+                                    propagate: false
+                                },
+                                'samples-filler-analyser': {
+                                    target: 'chart-analyser'
+                                }
+                            },
+                            interaction: {
+                                intersect: false,
+                            },
+                        },
+                    };
+                    var myChart = new Chart(
+                        document.getElementById('myChart4'),
+                        config
+                    );
+                </script>
+            </div>
+        
+        </div>
+
+    </div>
+
+
+</div>
+
+
+{% endblock contenido%}
