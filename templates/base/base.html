@@ -12,7 +12,7 @@
 
     <title>
         {% block head_title %}
-        Caja Chica - Quinar
+        Caja Chica 
         {% endblock head_title %}
     </title>
     <!-- Bootstrap Core CSS -->
@@ -51,7 +51,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{% url 'generales:home' %}">Caja Chica Quinar</a>
+                <a class="navbar-brand" href="{% url 'generales:home' %}">Caja Chica </a>
             </div>
             <!-- /.navbar-header -->
 
@@ -111,7 +111,7 @@
                                     <!--<a href="{% url 'caja:caja_rendir' %}">Rendir Cajas</a> -->
                                 </li>
                                 <li>
-                                    <a href="{% url 'caja:caja_cargar_rendicion' %}">Cargar Rendicion</a>
+                                    <a href="{% url 'caja:caja_cargar_rendicion' 0 %}">Cargar Rendicion</a>
                                 </li>
                                 <li>
                                     <a href="{% url 'generales:sin_privilegios' %}">Ver Rendiciones</a>

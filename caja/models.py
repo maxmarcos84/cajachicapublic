@@ -52,6 +52,27 @@ class Registro(models.Model):
     anulado = models.BooleanField(default=False)
     objects = RegistroManager()
 
+    def anular(self, *args, **kwargs):
+        self.anulado = True
+        rendicion = self.rendicion
+        if (self.incremento):
+                rendicion.saldoCaja -= self.ingreso
+                rendicion.Caja.saldo -=self.ingreso
+                rendicion.Caja.save()
+                rendicion.totalRendicion -= self.ingreso
+                rendicion.totalIncremento -= self.ingreso        
+        else:
+            rendicion.saldoCaja += self.egreso
+            rendicion.Caja.saldo += self.egreso
+            rendicion.Caja.save()
+            rendicion.totalRendicion += self.egreso
+            rendicion.totalEgreso -= self.egreso
+            self.centrodecosto.saldo -= self.egreso
+            self.centrodecosto.save()
+        self.save()
+        rendicion.save()  
+
+
 
 
 

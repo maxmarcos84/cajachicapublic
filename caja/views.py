@@ -27,11 +27,7 @@ class CajaListaView(LoginRequiredMixin, ListView):
     context_object_name = "obj"
     login_url='generales:login'
     queryset = Caja.objects.filter(activa = True) #esto filtra mas sencillo
-    
-    """def get_queryset(self):
-        queryset = Caja.objects.filter(activa = True)
-        return queryset
-        #esto me filtra la lista la concha de la lora"""
+   
 
 class CajaAddView(LoginRequiredMixin, SinPrivilegios, CreateView):
     permission_required = "caja.add_caja"
@@ -79,8 +75,7 @@ class CajaRendirView(LoginRequiredMixin, View):
         cajarendicion = self.get_caja().first()        
         return self.model.objects.get_caja_abierta(cajarendicion)
 
-    def get_queryset(self):
-        fecha = date.today()
+    def get_queryset(self):        
         cajarendicion = self.get_caja().first()        
         return self.model.objects.get_rendiciones(cajarendicion)
        
@@ -101,7 +96,6 @@ class CajaRendirView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         listado = self.get_context_data()
         form = RendicionForm(request.POST or None, request.FILES or None)
-        #form.Caja = self.get_caja()
         if form.is_valid():
             instance = form.save(commit = False)
             instance.Caja = self.get_caja().first()
@@ -123,9 +117,14 @@ class CargarRendicion(LoginRequiredMixin, SinPrivilegios, View):
     def get_queryset(self):                       
         return Rendicion.objects.get_ultimas_rendiciones()
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, idRendicion, *args, **kwargs):
+        if(idRendicion != 0):
+            rendicionCargada = True
+        else:
+            rendicionCargada = False
+
         contexto = {'form': self.form_class(), 
-        'archivoCargado': "False",
+        'rendicionCargada': rendicionCargada,
         'listado': self.get_queryset(),        
         }        
         return render(request, self.template_name, contexto)             
@@ -201,22 +200,15 @@ class CargarRendicion(LoginRequiredMixin, SinPrivilegios, View):
                 #rompiera todo
                 json_records = df2.reset_index().to_json(orient ='records')
                 data = []
-                data = json.loads(json_records)
-                context = {'tabla': data, 
-                    'archivoCargado' : "True", 
-                    'iniciales': iniciales,
-                    'fechaDesde': fechaDesde,
-                    'fechaHasta': fechaHasta,
-                    'saldo': saldo_caja,                    
-                    'empleado': empleado}
+                data = json.loads(json_records)            
                 
                 context_modal = { 
                     'iniciales': iniciales,
                     'fechaDesde': str(fechaDesde),
                     'fechaHasta': str(fechaHasta),
                     'saldo': str(saldo_caja),                    
-                    'empleado': serializers.serialize("json", [empleado]),
-                    'tabla': data}
+                    'empleado': empleado.id
+                    }
                 
                 #No puedo pasar un modelo por variable de sesion, solo lo paso si esta serializado como json
                 rendicion_json = serializers.serialize("json", [rendicion_nueva])
@@ -227,27 +219,36 @@ class CargarRendicion(LoginRequiredMixin, SinPrivilegios, View):
 
             #return render(request, "caja/cargar_rendicion.html", context)
             return redirect('caja:caja_confirmar_rendicion_modal')
-            
-
-
         except Exception as e:
             error = str(e)
-            contexto = {'form': self.form_class(), 
-                        'archivoCargado': "False",
+            contexto = {'form': self.form_class(),                         
                         'listado': self.get_queryset(),
                         'error' : error,      
                         }
-            return render(request, "caja/cargar_rendicion.html", contexto)
+            return redirect(request, "caja/cargar_rendicion.html", contexto)
 
-class ConfirmarRendicion(LoginRequiredMixin,  View):
+class ConfirmarRendicionModal(LoginRequiredMixin, View):
     model = Registro
-    form_class = CargarRendicionForm
-    contextos ={ 'form': form_class(), 'archivoCargado': "False"}     
+    template_name = "caja/confirmar_rendicion.html"
 
-    def get(self, request, *args, **kwargs):        
+    def get(self, request, *args, **kwargs):
         data = request.session['registros']
         rendicion_nueva = next(serializers.deserialize("json", request.session['rendicion'])).object 
-        rendicion_nueva.save()     
+        context = request.session['contexto']
+        contexto = {
+            'iniciales': context['iniciales'],
+            'fechaDesde': datetime.strptime(context['fechaDesde'], '%Y-%m-%d %H:%M:%S'),
+            'fechaHasta': datetime.strptime(context['fechaHasta'], '%Y-%m-%d %H:%M:%S'),
+            'saldo': context['saldo'],                    
+            'empleado': Empleado.objects.get(user = rendicion_nueva.Caja.usuarioCaja),
+            'tabla': data,
+        }
+        return render(request, self.template_name, contexto)
+    
+    def post(self, request, *args, **kwargs):
+        data = request.session['registros']
+        rendicion_nueva = next(serializers.deserialize("json", request.session['rendicion'])).object 
+        rendicion_nueva.save()   
 
         totalIncremento = Decimal(0.00)
         totalEgreso = Decimal(0.00)
@@ -277,19 +278,9 @@ class ConfirmarRendicion(LoginRequiredMixin,  View):
             totalIncremento += Decimal(reg['ingreso'])
             totalEgreso += Decimal(reg['egreso'])
             saldoFinalCaja = registro.saldo
-
         Rendicion.objects.actualizar_montos(rendicion_nueva, totalIncremento, totalEgreso, saldoFinalCaja)
+
         return redirect('caja:caja_cargar_rendicion')
-
-class ConfirmarRendicionModal(LoginRequiredMixin, View):
-    model = Registro
-    template_name = "caja/confirmar_rendicion.html"
-
-    def get(self, request, *args, **kwargs):
-        data = request.session['registros']
-        rendicion_nueva = next(serializers.deserialize("json", request.session['rendicion'])).object 
-        context = request.session['contexto']
-        return render(request, self.template_name, context)
 
 class DetalleRendicion(LoginRequiredMixin, View):
     model = Registro
@@ -319,7 +310,9 @@ class AnularRegistroView(LoginRequiredMixin,  View):
 
     def post(self, request, idRegistro, *args, **kwargs):
         registro = Registro.objects.get(id=idRegistro)
-        if request.is_ajax():            
+        if request.is_ajax():
+            registro.anular()
+            """
             registro.anulado = True    
             rendicion = registro.rendicion            
             if (registro.incremento):
@@ -338,4 +331,5 @@ class AnularRegistroView(LoginRequiredMixin,  View):
                 registro.centrodecosto.save()
             registro.save()
             rendicion.save()               
-        return redirect('caja:caja_detalle_rendicion', idRendicion=rendicion.id)
+            """            
+        return redirect('caja:caja_detalle_rendicion', idRendicion=registro.rendicion.id)
